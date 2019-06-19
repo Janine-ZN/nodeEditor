@@ -14,13 +14,20 @@ router.get('/list', (req, res) => {
     });
 });
 
+// 2.展示单篇文章
+router.get('/article', (req, res) => {
+    pool.query('SELECT content FROM news WHERE menu=? and submenu=?', ["一级菜单", "二级菜单"], (err, result) => {
+        if (err) throw err;
+        res.send(result);
+    });
+});
+
 router.post('/add', (req, res) => {
     var obj = req.body;
-    console.log("object对象==》" +JSON.stringify(obj));
     var $menu = obj.menu;
     var $submenu = obj.submenu
     var $content = obj.content;
-    console.log("内容==》" + $content, "一级菜单==》" + $menu, "二级菜单==》" + $submenu);
+    console.log("内容==》" + $content);
 
     pool.query("INSERT INTO news (id,menu,submenu,content,created_time,last_modified_time) SELECT ?,?,?,?,?,? from DUAL where not exists(select content from news where content = ?)",
         [null, $menu, $submenu, $content, '2019-02-03', '2019-06-06', $content], (err, result) => {
