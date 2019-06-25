@@ -91,5 +91,45 @@ router.post('/update', (req, res) => {
         });
 });
 
+// 5.刪除
+router.get('/delete', (req, res) => {
+    var obj = req.query;
+    var id = obj.id;
+    pool.query('DELETE FROM news WHERE id = ?', [id], (err, result) => {
+        if (err) throw err;
+        if (result.affectedRows > 0) {
+            res.send({
+                code: 200,
+                msg: 'update suc'
+            });
+        } else {
+            res.send({
+                code: 301,
+                msg: 'update err'
+            });
+        }
+    });
+});
+
+// 6.单个页面搜索
+router.get('/single', (req, res) => {
+    var obj = req.query;
+    var id = obj.id;
+    pool.query('select * from news where id = ?', [id], (err, result) => {
+        if (err) throw err;
+        console.log(result.length);
+        if (result.length) {
+            res.send({
+                status: 1,
+                msg: result
+            });
+        } else {
+            res.send({
+                status: 0,
+                msg: '数据为空!'
+            });
+        }
+    });
+});
 //导出路由器
 module.exports = router;
